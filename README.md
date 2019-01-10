@@ -1,5 +1,6 @@
 # Lathe-on-PSOC
 Электронная гитара на PSOC CY8CKIT-049-42xx
+
 Идея и алгоритмы:
 - "Управление токарным на Atmega" https://www.chipmaker.ru/topic/97701/
 - "Еще одна электронная гитара для токарника, на Ардуино" https://www.chipmaker.ru/topic/97701/
