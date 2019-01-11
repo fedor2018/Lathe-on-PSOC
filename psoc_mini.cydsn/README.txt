@@ -17,7 +17,7 @@ SSSS:
     DECEL
     FAST
 
-eeprom:
+настройки:
 #define Screw_mm                2.0 //шаг винта
 #define Motor_Z_Step_Per_Rev    200      // Кол-во шагов/об, ось X
 #define QUAD_RES                2000//энкодер дел/об
