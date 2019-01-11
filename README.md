@@ -18,9 +18,9 @@
 - PSoC® Creator™ Integrated Design Environment (IDE)
 
 Настройки в main.h:
-#define Screw_mm                2.0 //шаг винта
-#define Motor_Z_Step_Per_Rev    200 // Кол-во шагов/об, ось X
-#define QUAD_RES                2000//энкодер дел/об
-#define MicroStep_Z             4   // Микрошаг
-#define ACCEL_N                 20  // accel* steps
+ #define Screw_mm                2.0 //шаг винта
+ #define Motor_Z_Step_Per_Rev    200 // Кол-во шагов/об, ось X
+ #define QUAD_RES                2000//энкодер дел/об
+ #define MicroStep_Z             4   // Микрошаг
+ #define ACCEL_N                 20  // accel* steps
 
