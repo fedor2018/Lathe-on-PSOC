@@ -1,4 +1,4 @@
-# Lathe-on-PSOC
+# Lathe-on-PSOC ( Electronic Leadscrew )
 Электронная гитара на PSOC CY8CKIT-049-42xx
 
 Идея и алгоритмы:
