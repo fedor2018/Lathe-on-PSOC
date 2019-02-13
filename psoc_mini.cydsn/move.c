@@ -108,7 +108,7 @@ CY_ISR(ISR_DIV_Handler){
             if(Motor_Z_Pos>=move.lim_right){
                 move.state=st_end;
             }else{
-                if(Motor_Z_Pos>=(move.lim_right-move.ks_acc)){
+                if(Motor_Z_Pos>=move.acc_right/*(move.lim_right-move.ks_acc)*/){
                     div_print('+', st_decel);
                     move.state=st_decel;
                 }
@@ -120,7 +120,7 @@ CY_ISR(ISR_DIV_Handler){
             if(Motor_Z_Pos<=move.lim_left){
                 move.state=st_end;
             }else{
-                if(Motor_Z_Pos<=(move.lim_left+move.ks_acc)){
+                if(Motor_Z_Pos<=move.acc_left/*(move.lim_left+move.ks_acc)*/){
                     div_print('-',st_decel);
                     move.state=st_decel;
                 }

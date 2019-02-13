@@ -177,6 +177,22 @@ void lcd_row4(){
     LCD_PrintString(b);
 }
 
+void move_en(){
+    long dt;
+    if(LEFT_IS_ON){
+        dt=(Motor_Z_Pos-move.lim_left);
+        move.acc_left=move.lim_left+
+            ((dt<(2*move.ks_acc))?dt/2:move.ks_acc);
+    }
+    if(RIGHT_IS_ON){
+        dt=(move.lim_right-Motor_Z_Pos);
+        move.acc_right=move.lim_right-
+            ((dt<(2*move.ks_acc))?dt/2:move.ks_acc);
+    }
+    if(move.state==st_stop)//
+        move.state=st_wait;
+}
+
 void joy_scan(){
     if(joy!=flag.joy){
         if(joy<Key_None&&flag.joy<Key_None){//unknown
@@ -188,13 +204,11 @@ void joy_scan(){
                 switch(joy){
                     case Joy_Left:
                         Pin_Dir_Write(DIR_LEFT);
-                        if(move.state==st_stop)//
-                            move.state=st_wait;
+                        move_en();
                         break;
                     case Joy_Right:
                         Pin_Dir_Write(DIR_RIGHT);
-                        if(move.state==st_stop)//
-                            move.state=st_wait;
+                        move_en();
                         break;
                     case Key_Down:
                         MenuKeyDownPressed();

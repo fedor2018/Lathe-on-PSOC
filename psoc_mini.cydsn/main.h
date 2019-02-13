@@ -12,7 +12,7 @@
 #include "project.h"
 #include <stdio.h>
 
-#define VER "0.2b"
+#define VER "0.3b"
 void version(char *sversion);
 void div_print(char s, uint8 st);
 

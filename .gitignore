@@ -1,2 +1,8 @@
 *.su04759
 *.fedor
+*.log
+*.rpt
+codegentemp
+CortexM0
+Export
+Generated_Source

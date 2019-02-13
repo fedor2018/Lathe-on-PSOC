@@ -72,16 +72,18 @@ enum State{
 };
 
 typedef struct {
-    uint8 state;
-    int16 accel;
-    int16 ks_tmp;//ks_div+accel;
-    uint16 ks_acc;//accel
-    int16 ks_div;
-    int16 ks_fast;
-    int16 km_cnt;
-    int16 km_div;
+    uint8_t state;
+    int16_t accel;
+    int16_t ks_tmp;//ks_div+accel;
+    uint16_t ks_acc;//accel
+    int16_t ks_div;
+    int16_t ks_fast;
+    int16_t km_cnt;
+    int16_t km_div;
     long lim_left;
     long lim_right;
+    uint16_t acc_left;
+    uint16_t acc_right;
 } MOVE_INFO;
 
 /* [] END OF FILE */
