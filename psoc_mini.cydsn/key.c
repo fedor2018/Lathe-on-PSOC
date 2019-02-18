@@ -179,13 +179,13 @@ void lcd_row4(){
 
 void move_en(){
     long dt;
-    if(LEFT_IS_ON){
-        dt=(Motor_Z_Pos-move.lim_left);
+    if(LEFT_IS_ON){//(move.lim_left+move.ks_acc)
+        dt=(move.lim_left-Motor_Z_Pos);
         move.acc_left=move.lim_left+
             ((dt<(2*move.ks_acc))?dt/2:move.ks_acc);
     }
-    if(RIGHT_IS_ON){
-        dt=(move.lim_right-Motor_Z_Pos);
+    if(RIGHT_IS_ON){//(move.lim_right-move.ks_acc)
+        dt=(Motor_Z_Pos-move.lim_right);
         move.acc_right=move.lim_right-
             ((dt<(2*move.ks_acc))?dt/2:move.ks_acc);
     }
