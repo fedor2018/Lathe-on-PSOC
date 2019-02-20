@@ -82,8 +82,8 @@ typedef struct {
     int16_t km_div;
     long lim_left;
     long lim_right;
-    uint16_t acc_left;
-    uint16_t acc_right;
+    long acc_left;
+    long acc_right;
 } MOVE_INFO;
 
 /* [] END OF FILE */

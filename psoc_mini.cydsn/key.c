@@ -161,11 +161,11 @@ void lcd_row3(){
 
     LCD_Position(2u, 0u);//row, col
     snprintf(buf,20,"%5s  %c%u.%02u %5s",
-        ((joy==Joy_Left)?"<<":" "),
+        ((joy==Joy_Left)?"<<":"  "),
         ((Motor_Z_Pos>=0)?' ':'-'),
         abs((int16)(pos/100)), 
         abs(pos%100),
-        ((joy==Joy_Right)?">>":" ")
+        ((joy==Joy_Right)?">>":"  ")
     );
     LCD_PrintString(buf);
 }
