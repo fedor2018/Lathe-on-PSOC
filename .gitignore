@@ -6,3 +6,4 @@ codegentemp
 CortexM0
 Export
 Generated_Source
+*.~TXT

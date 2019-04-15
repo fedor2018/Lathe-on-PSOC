@@ -12,7 +12,7 @@
 #include "project.h"
 #include <stdio.h>
 
-#define VER "0.3b"
+#define VER "0.4b"
 void version(char *sversion);
 void div_print(char s, uint8 st);
 
@@ -33,6 +33,7 @@ void move_init();
 #define RIGHT_IS_ON     (Pin_Right_Read()!=0)
 #define STEP_ON         (Pin_Step_Write(0))
 #define STEP_OFF        (Pin_Step_Write(1))
+#define STEP_IS_ON      (Pin_Step_Read()==0)
 #define SPINDEL_CCW     (Pin_CCW_Write(0))
 #define SPINDEL_ACW     (Pin_CCW_Write(1))
 #define DIR_LEFT        0
@@ -41,7 +42,7 @@ void move_init();
 #define MOVE_RIGHT      ((Pin_Dir_Read()&1)==DIR_RIGHT)
 /**/
 #define RPM_FREQ                30000 //rpm clock counter
-#define MicroStep_Z             4   // Микрошаг
+#define MicroStep_Z             2   // Микрошаг
 //#define Screw_len               500 //длина винта mm
 #define Screw_mm                2.0 //шаг винта
 #define QUAD_RES                2000//энкодер дел/об

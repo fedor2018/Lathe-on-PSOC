@@ -101,8 +101,8 @@ CY_ISR(ISR_DIV_Handler){
         STEP_ON;
         return;
     }
-    STEP_OFF;//div==0
-    if(MOVE_RIGHT){
+   STEP_OFF;//div==0
+   if(MOVE_RIGHT){
         Motor_Z_Pos++;
         if(RIGHT_IS_ON){
             if(Motor_Z_Pos>=move.lim_right){
