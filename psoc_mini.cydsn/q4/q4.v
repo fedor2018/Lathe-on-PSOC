@@ -16,8 +16,7 @@ module q4(
     input wire A,
     input wire B,
     output reg count,
-    output reg dir,
-    output reg cw
+    output reg dir
     );
 //`#start body` -- edit after this line, do not edit this line
 
@@ -28,11 +27,15 @@ always @(posedge clk) quadB_delayed <= {quadB_delayed[1:0], B};
 
 wire c = quadA_delayed[1] ^ quadA_delayed[2] ^ quadB_delayed[1] ^ quadB_delayed[2];
 wire d = quadA_delayed[1] ^ quadB_delayed[2];
+reg tmp;
 
 always @(posedge clk) begin
-    count <= c;
-    dir <= d;
-    if(count) cw <= dir;
+   if(c)
+		dir <= d;
+	count <= c;
+end
+
+always @(negedge count) begin
 end
 //`#end` -- edit above this line, do not edit this line
 
