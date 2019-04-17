@@ -104,7 +104,7 @@ void lcd_row2(){
     char b[21];
     space_str(b);
     LCD_Position(1u, 0u);//row, col
-    sprintf(b+2,"%s     ",Pin_CCW_Read()?"CCW":"ACW");
+    sprintf(b+2,"%s     ",Pin_CCW_Read()?"Rev":"Frw");//"CCW":"ACW");
     if(rpm>61000 || rpm==0){
         uint32 ang=ENC_ANG(QUAD_ReadCounter());
         snprintf(b+7,12, "Ang %3u.%1.1u  ", (uint16)(ang/10), (uint16)(ang%10));

@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <blockRegMap version="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cypress.com/xsd/cyblockregmap cyblockregmap.xsd" xmlns="http://cypress.com/xsd/cyblockregmap">
-  <block name="Clk_RPM" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="EEPROM" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="Clk_Q_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="Pin_CCW" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="Pin_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="Pin_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="ISR_ADC" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="Pin_Zero" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="RPM" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false">
     <block name="VMux_count" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="VMux_reload" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
@@ -22,6 +15,12 @@
     <register name="PERIOD" address="0x40050194" bitWidth="32" desc="Period value" hidden="false" />
     <register name="PERIOD_BUF" address="0x40050198" bitWidth="32" desc="Period buffer value" hidden="false" />
   </block>
+  <block name="Clk_RPM" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="Pin_Test_Count" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="Clk_Q_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="ISR_ADC" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="ISR_KEY" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="Pin_Test_Dir" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="QUAD" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false">
     <block name="ZeroTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="VirtualMux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
@@ -34,7 +33,7 @@
       <field name="CTRL_CAPMODE" from="4" to="3" access="RW" resetVal="" desc="Capture mode" hidden="false" />
       <field name="CTRL_CMPMODE" from="2" to="0" access="RW" resetVal="" desc="Compare mode" hidden="false" />
     </register>
-    <register name="QUAD_STATUS_MASK" address="0x400F0081" bitWidth="8" desc="UDB Status bits Interrupt Mask Enable Register" hidden="false">
+    <register name="QUAD_STATUS_MASK" address="0x400F0082" bitWidth="8" desc="UDB Status bits Interrupt Mask Enable Register" hidden="false">
       <field name="COUNTER_STS_CMP" from="0" to="0" access="RW" resetVal="" desc="Compare output status" hidden="false" />
       <field name="COUNTER_STS_A0ZERO" from="1" to="1" access="RW" resetVal="" desc="A0 Zero ouput status" hidden="false" />
       <field name="COUNTER_STS_OVERFLOW" from="2" to="2" access="RW" resetVal="" desc="Overflow status " hidden="false" />
@@ -43,7 +42,7 @@
       <field name="COUNTER_STS_FIFO_FULL" from="5" to="5" access="RW" resetVal="" desc="FIFO Full Status " hidden="false" />
       <field name="COUNTER_STS_FIFO_NEMPTY" from="6" to="6" access="RW" resetVal="" desc="FIFO Not Empty Status " hidden="false" />
     </register>
-    <register name="QUAD_STATUS_AUX_CTRL" address="0x400F0091" bitWidth="8" desc="UDB Auxilliary Control Register" hidden="false">
+    <register name="QUAD_STATUS_AUX_CTRL" address="0x400F0092" bitWidth="8" desc="UDB Auxilliary Control Register" hidden="false">
       <field name="FIFO0_CLR" from="0" to="0" access="RW" resetVal="" desc="FIFO0 clear" hidden="false">
         <value name="E_FIFO_CLR_0" value="0" desc="Normal FIFO operation" />
         <value name="E_FIFO_CLR_1" value="1" desc="Clear FIFO state" />
@@ -70,18 +69,18 @@
       </field>
     </register>
   </block>
-  <block name="Clk_Q" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="Pin_Zero" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="Pin_CCW" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="Pin_4" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="Pin_A" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="Em_EEPROM_Dynamic" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="cy_lfclk" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="cy_boot" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="ISR_QUAD_COMP" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="ISR_QUAD_TC" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="Q4" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="Pin_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="Clk_Q" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="ISR_QUAD_COMP" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="Pin_B" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="ISR_KEY" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="Q4" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="ADC" BASE="0x0" SIZE="0x0" desc="Sequencing SAR ADC" visible="true" hidden="false">
     <block name="cy_analog_noconnect_30" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="cy_analog_noconnect_31" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />

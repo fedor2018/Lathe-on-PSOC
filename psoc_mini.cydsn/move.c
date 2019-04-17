@@ -98,7 +98,7 @@ CY_ISR(ISR_RPM_Handler){
 CY_ISR(ISR_DIV_Handler){
     if(DIV_GetInterruptSource()&DIV_INTR_MASK_CC_MATCH){//div==1
         DIV_ClearInterrupt(DIV_INTR_MASK_CC_MATCH);
-        STEP_ON;
+//        STEP_ON;
         return;
     }
    STEP_OFF;//div==0
@@ -169,6 +169,7 @@ CY_ISR(ISR_DIV_Handler){
     }
     
     DIV_ClearInterrupt(DIV_INTR_MASK_TC);
+    STEP_ON;//div==0
     DIV_Start();
 }
 /* [] END OF FILE */
