@@ -27,12 +27,22 @@
 - #define Screw_mm                2.0 //шаг винта
 - #define Motor_Z_Step_Per_Rev    200 // Кол-во шагов/об
 - #define QUAD_RES                2000//энкодер дел/об
-- #define MicroStep_Z             4   // Микрошаг
-- #define ACCEL                   20  // accel* steps
+- #define MicroStep_Z             2   // Микрошаг
+- #define ACCEL                   20  // accel* steps ???
+- #define QUAD_MAX                (QUAD_RES*4)
+- #define STEP_PER_MM        		  ((Motor_Z_Step_Per_Rev*MicroStep_Z)/Screw_mm) //400
+- #define TICK_PER_STEP_MM        (QUAD_MAX/STEP_PER_MM) //200=0.005mm
 
 Проблемы:
 - из-за люфта показания неточные
 - подклинивание ШД при больших оборотах и подачах
 - устранение подклинивания акселерацией ограничено длиной разгона
 
+Тест диапазона частот на входе драйвера от DDS:
+Шаг/об    Стартовая   Максимальная
+400       2500        7500
+800       5000        20000
+1600      10000       50000
+*Стартовая - макс. частота пуска
+*Максимальная - макс. устойчивая частота вращения
 
