@@ -11,3 +11,4 @@ Generated_Source
 /psoc_mini.cydsn/q4/db
 /psoc_mini.cydsn/q4/incremental_db
 /psoc_mini.cydsn/q4/output_files
+*.~md
