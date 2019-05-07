@@ -75,7 +75,8 @@ typedef struct {
     uint8_t state;
     int16_t accel;
     int16_t ks_tmp;//ks_div+accel;
-    uint16_t ks_acc;//accel
+    int16_t ks_inc;//accel incr/decr
+    int16_t ks_acc;//accel range
     int16_t ks_div;
     int16_t ks_fast;
     int16_t km_cnt;

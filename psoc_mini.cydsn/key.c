@@ -73,23 +73,27 @@ void lcd_row1(){
             move.ks_div=THREAD_MM_STEP_I(Thread[mode.Thread]);
             move.km_div=THREAD_MM_STEP_D(Thread[mode.Thread]);
             move.ks_fast=THREAD_MM_STEP_I(Thread[Thread_idx-1]);
+            move.ks_inc=mode.Thread<1?1:(THREAD_MM_STEP_I(Thread[0])-move.ks_div)/mode.Thread;//
             break;
         case Mode_Tpi:
             snprintf(buf,15,"Thread:  %2dtpi   ", Thread_tpi[mode.Tpi]);
             move.ks_div=THREAD_TPI_STEP_I(Thread_tpi[mode.Tpi]);
             move.km_div=THREAD_TPI_STEP_D(Thread_tpi[mode.Tpi]);
             move.ks_fast=THREAD_TPI_STEP_I(Thread_tpi[Tpi_idx-1]);
+            move.ks_inc=mode.Tpi<1?1:(THREAD_TPI_STEP_I(Thread_tpi[0])-move.ks_div)/mode.Tpi;//
             break;
         case Mode_Feed:
         default:
             snprintf(buf,15,"  Feed: 0.%2.2dmm   ", Feeds[mode.Feed]);
             move.ks_div=FEED_MM_STEP(Feeds[mode.Feed]);
             move.km_div=0;
-            move.ks_fast=FEED_MM_STEP(Feeds[Feed_idx-1]);
+            move.ks_fast=FEED_MM_STEP(100);//1mm Feeds[Feed_idx-1]);
+            move.ks_acc=move.ks_tmp=FEED_MM_STEP(Feeds[0]);
+            move.ks_inc=mode.Feed<1?1:(move.ks_tmp-move.ks_div)/mode.Feed;//
             break;
     }
-    move.ks_acc=move.ks_div+ACCEL;
-    move.ks_tmp=move.ks_div+move.ks_acc;
+//    move.ks_acc=move.ks_div+ACCEL;
+//    move.ks_tmp=move.ks_div+move.ks_acc;
     move.km_cnt=0;
     LCD_PrintString(buf);
 /*    UART_UartPutString(buf);

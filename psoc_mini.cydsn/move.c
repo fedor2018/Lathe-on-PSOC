@@ -129,11 +129,12 @@ CY_ISR(ISR_DIV_Handler){
     }
    switch(move.state){
         case st_accel:
-            move.ks_tmp--;
+            move.ks_tmp-=move.ks_inc;
             if(move.ks_tmp<=move.ks_div){
                 div_print('a',st_run);
                 move.state=st_run;
                 move.km_cnt=0;
+                move.ks_tmp=move.ks_div;
             }
             DIV_WriteCounter(move.ks_tmp-1);
             break;
@@ -152,8 +153,8 @@ CY_ISR(ISR_DIV_Handler){
             }
             break;
         case st_decel:
-            if(move.ks_tmp < (move.ks_div+move.ks_acc)){///ks_div+accel
-                move.ks_tmp++;
+            if(move.ks_tmp < (/*move.ks_div+*/move.ks_acc)){///ks_div+accel
+                move.ks_tmp+=move.ks_inc;
                 DIV_WriteCounter(move.ks_tmp-1);
                 break;
             }
@@ -162,6 +163,7 @@ CY_ISR(ISR_DIV_Handler){
         default:
             div_print('e',st_stop);
             move.state=st_stop;
+            move.ks_tmp=move.ks_acc;
             DIV_ClearInterrupt(DIV_INTR_MASK_TC);
             DIV_Stop();
             return;//
