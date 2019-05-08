@@ -52,7 +52,7 @@ void move_init();
 #define Motor_Z_Step_Per_Rev    200      // Кол-во шагов/об, ось X
 #define STEP_PER_MM        		((Motor_Z_Step_Per_Rev*MicroStep_Z)/Screw_mm)
 #define Motor_Z_MM(z)           ((z*100)/STEP_PER_MM)
-//#define ACCEL                   50 // accel->steps
+#define ACCEL                   50 // accel->steps
 //#define TICK_PER_STEP_MM        (QUAD_MAX/((Motor_Z_Step_Per_Rev*MicroStep_Z)/Screw_mm))
 #define TICK_PER_STEP_MM        (QUAD_MAX/STEP_PER_MM)
 #define FEED_MM_STEP(mm) 		(uint16_t)(TICK_PER_STEP_MM*100/mm)
