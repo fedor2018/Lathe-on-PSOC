@@ -1,0 +1,202 @@
+/*
+=============================================================
+=       Project: S curve
+=      Language: Arduiino r12
+=          Date: January 2008
+=        Author: C. Eckert
+=============================================================
+*/
+
+// Givens
+long ta = 3e6;     // acceleration time (microsec)
+long td = 3e6;     // decelleration time (microsec)
+long Vm = 3200;    // steady state velocity (pulse/sec)
+long Pt = 12800;    // total number of pulses for move (1600 steps per rev)
+
+// Other variables
+long dly;           // stepper pulse delay (microsec)
+long t = td/9;      // current time (microsec)  -  You need to seed the initial time with something > 0
+                   //                             so you don't calculate to long of a delay
+long t12;           // time during constant velocity (microsec)
+
+int count = 0;      // count the number of pulses
+int Perr = 0;       // error in position
+
+// Arduino pins
+#define dirPin 3
+#define stepPin 12
+
+void setup() {
+ Serial.begin(9600);
+ pinMode(dirPin, OUTPUT);
+ pinMode(stepPin, OUTPUT);
+ 
+ // Calculate the time at constant velocity
+ t12 = (Pt/(Vm/1e6))-0.5*(ta+td);
+ Serial.println(); Serial.println();
+
+ Serial.println("Setup Done");
+}
+void loop()
+{
+ digitalWrite(dirPin, LOW);  // Set the stepper direction
+
+ // Decide which part of the velocity curve your at
+ if (t<ta) {                                       // Acceleration
+   //Serial.println ("Acceleration Curve");
+   dly = (ta)/(2*(Vm/1e6)*t);
+ }
+ else if (t>=ta && t<(ta+t12)){                    // Constant velocity
+   //Serial.println ("Constant Velocity");
+   dly = 1/(2*(Vm/1e6));
+ }
+ else if (t>=(ta+t12) && t<(ta+t12+td)){          // Deceleration
+   //Serial.println ("Deceleration Curve");
+   dly = 1/(2*((Vm/1e6)-(Vm/(1e6*td))*(t-ta-t12)));
+ }
+ 
+ t = t+2*dly; // update the current time
+ //Serial.print("dly: "); Serial.print (dly); Serial.println(" microsec");
+ //Serial.print ("Current time: "); Serial.print(t); Serial.println(" microsec");
+ 
+ // Move stepper one pulse using delay just calculated
+ digitalWrite(stepPin, HIGH);
+ delayMicroseconds(dly);
+ digitalWrite(stepPin, LOW);
+ delayMicroseconds(dly);
+ count ++;
+   
+ // The move is finished
+ if (t>(ta+t12+td)){
+   Serial.println ("Move Complete");
+   Serial.print ("Total steps indexed: "); Serial.println (count);
+   
+   // Correct for any position error due to rounding
+   Perr = Pt-count;
+   if (Perr < 0) {
+     digitalWrite(dirPin, 1^digitalRead(dirPin));  // reverse the stepper direction
+     delay(50);
+     Perr = -1*Perr;
+   }
+   for (;Perr>0;){
+     digitalWrite(stepPin, HIGH);
+     delayMicroseconds(dly);
+     digitalWrite(stepPin, LOW);
+     delayMicroseconds(dly);
+     Perr--;
+   }
+   
+   count=0;
+   t=td/9;
+   
+   delay (1000);
+ }
+ 
+}
+
+====================================
+For reference, the current Klipper code (with constant acceleration) uses:
+1 - end_velocity = sqrt(start_velocity^2 + 2*accel*move_distance)
+2 - accel_time = accel_move_distance / ((start_velocity + cruise_velocity) * 0.5)
+3 - time = sqrt(2*distance/accel + (start_velocity/accel)^2) - start_velocity/accel
+====================================
+diff --git a/klippy/stepcompress.c b/klippy/stepcompress.c
+index 6c5f766..ec677d5 100644
+--- a/klippy/stepcompress.c
++++ b/klippy/stepcompress.c
+@@ -23,6 +23,7 @@
+ #include "pyhelper.h" // errorf
+ #include "serialqueue.h" // struct queue_message
+ 
++#define USE_BEZIER_VELOCITY_RAMP 1
+ #define CHECK_LINES 1
+ #define QUEUE_START_SIZE 1024
+ 
+@@ -517,6 +518,50 @@ stepcompress_push(struct stepcompress *sc, double print_time, int32_t sdir)
+     return sdir ? 1 : -1;
+ }
+ 
++#if USE_BEZIER_VELOCITY_RAMP
++struct bezier {
++    double a, b, c, start_sv, end_sv;
++};
++
++static void
++init_bezier_coeffs(struct bezier *b, double start_sv, double end_sv)
++{
++    double sv_delta = end_sv - start_sv;
++    b->a =  6. * sv_delta;
++    b->b = 15. * -sv_delta;
++    b->c = 10. * sv_delta;
++    b->start_sv = start_sv;
++    b->end_sv = end_sv;
++}
++
++static inline double
++bezier_nm_next_x(struct bezier *b, double dist, double x)
++{
++    double f = b->a*pow(x, 6.)/6. + b->b*pow(x, 5.)/5. + b->c*pow(x, 4.)/4. + b->start_sv*x - dist;
++    double fp = b->a*pow(x, 5.) + b->b*pow(x, 4.) + b->c*pow(x, 3.) + b->start_sv;
++    return x - f/fp;
++}
++
++#define NM_MAX_ITER 100
++static int32_t
++bezier_step_time(struct bezier *b, double dist, double max_err, double *ret)
++{
++    double xn = 0.5;
++    double xn1 = bezier_nm_next_x(b, dist, xn);
++    int i;
++    for (i = 0; fabs(xn1 - xn) > max_err && i < NM_MAX_ITER; ++i) {
++        xn = xn1;
++        xn1 = bezier_nm_next_x(b, dist, xn);
++    }
++    if (i == NM_MAX_ITER) {
++        errorf("bezier_step_time did not converge after %d iterations!\n", NM_MAX_ITER);
++        return ERROR_RET;
++    }
++    *ret = xn1;
++    return 0;
++}
++#endif
++
+ // Schedule 'steps' number of steps at constant acceleration. If
+ // acceleration is zero (ie, constant velocity) it uses the formula:
+ //  step_time = print_time + step_num/start_sv
+@@ -564,6 +609,26 @@ stepcompress_push_const(
+         }
+         queue_append_finish(qa);
+     } else {
++#if USE_BEZIER_VELOCITY_RAMP
++        // Move with 5th-order Bézier curve smoothed velocity ramp
++        double end_sv = safe_sqrt(start_sv*start_sv + 2.*accel*steps);
++        double move_time = steps / ((start_sv + end_sv) * .5);
++        struct bezier b;
++        init_bezier_coeffs(&b, start_sv, end_sv);
++        struct queue_append qa = queue_append_start(sc, print_time, .5);
++        double max_err = 1. / (sc->mcu_freq * move_time * 2.);
++        for (int i = 0; i < count; ++i) {
++            double scaled_dist = (i + .5 + step_offset) / move_time;
++            double t = 0.;
++            int ret = bezier_step_time(&b, scaled_dist, max_err, &t);
++            if (ret)
++                return ret;
++            double pos = t * move_time * sc->mcu_freq;
++            ret = queue_append(&qa, pos);
++            if (ret)
++                return ret;
++        }
++#else
+         // Move with constant acceleration
+         double inv_accel = 1. / accel;
+         double accel_time = start_sv * inv_accel * sc->mcu_freq;
+@@ -578,6 +643,7 @@ stepcompress_push_const(
+                 return ret;
+             pos += accel_multiplier;
+         }
++#endif
+         queue_append_finish(qa);
+     }
+     return res;
+=====================================
+
