@@ -200,3 +200,55 @@ index 6c5f766..ec677d5 100644
      return res;
 =====================================
 
+' --- INIT PARAMETERS ---
+freq          = 5000;    ' steps/s, destination frequency
+accel       = 100000;    ' steps/s^2, max acceleration
+S_start_percent   = 10;    ' %, s-curve start percent
+S_end_percent   = 50;    ' %, s-curve end percent
+
+
+' --- CALCULATED PARAMETERS ---
+L_t = Floor( freq * 1000000 / accel ) ' microseconds to accelerate from 0 to freq (linear)
+   L_t = 50000
+S_start_t2 = Floor(L_t * S_start_percent / Floor(Sqrt(100^2 + S_start_percent^2)) )
+   S_start_t2 = 5000
+S_end_t1 = Floor(L_t * S_end_percent / Floor(Sqrt(100^2 + S_start_percent^2)) )
+   S_end_t1 = 25000
+
+
+' --- BASE FUNCTIONS ---
+L_accel_func(t) = Floor(t * accel / 1000000);
+L_accel_graph(t) = IIf( t < 0, 0, IIf( t < L_t, L_accel_func(t), freq));
+
+
+' --- ADDITIONAL FUNCTIONS ---
+S_start_t1 = Floor( Sqrt(S_start_t2^2 + L_accel_func(S_start_t2)^2) );
+S_start_SIN = Floor( 2^20 * L_accel_func(S_start_t2) / S_start_t1 );
+S_start_R = Floor( 2^20 * (S_start_t1 + S_start_t2) / S_start_SIN );
+S_start_func(t) = -Floor(Sqrt(S_start_R^2 - t^2)) + S_start_R;
+
+S_middle_func(t) = Floor((t - S_start_t1) * accel / 1000000);
+
+S_end_t2 = Floor( Sqrt(S_end_t1^2 + L_accel_func(S_end_t1)^2) );
+S_end_SIN = Floor( 2^20 * L_accel_func(S_end_t2) / S_end_t1 );
+S_end_R = Floor( 2^20 * (S_end_t1 + S_end_t2) / S_end_SIN );
+S_end_func(t) = Floor(Sqrt(S_end_R^2 - (t - L_t - S_start_t1 - S_end_t2)^2)) - S_end_R + freq;
+
+S_t = S_start_t1 + L_t + S_end_t2 ' microseconds to accelerate from 0 to freq (S-curve)
+   S_t = 80148
+
+S_accel_graph(t) = IIf( t < 0, 0, IIf( t < S_start_t1 + S_start_t2, S_start_func(t), IIf( t < L_t + S_start_t1 - S_end_t1, S_middle_func(t), IIf( t < L_t + S_start_t1 + S_end_t2, S_end_func(t), freq ) ) ) );
+
+
+' --- PLOT ---
+' settings
+Title    = frequency acceleration;
+LegendPos    = BottomRight;
+xLabel   = time, us;
+yLabel   = frequency, steps/s;
+' output
+Plot( L_accel_graph(t), Legend=Linear    0% : 100% :  0%, Color=RGB(200,200,200), Width=8, xMin=-0.2*L_t,xMax=1.2*(L_t+S_start_t1+S_end_t2),yMin=-0.1*freq,yMax=1.1*freq);
+Plot( S_accel_graph(t), Legend=S-curve  10% :  40% : 50%, Color=Blue, Width=2 );
+'Plot( S_start_func(t), Legend=S start func, Color=RGB(255,0,0), Width=1 );
+'Plot( S_middle_func(t), Legend=S middle func, Color=RGB(0,255,0), Width=1 );
+'Plot( S_end_func(t), Legend=S end func, Color=RGB(0,0,255), Width=1 );
